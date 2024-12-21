@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "thread": "cpp",
+        "iostream": "cpp",
+        "iosfwd": "cpp",
+        "limits": "cpp"
+    },
+    "cmake.sourceDirectory": "C:/Users/Windows/Documents/mmf/streaming-test"
+}
