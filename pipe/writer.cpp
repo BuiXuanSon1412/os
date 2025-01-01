@@ -3,7 +3,7 @@
 #include <chrono>
 
 #define PIPE_NAME L"\\\\.\\pipe\\MyBenchmarkPipe"
-#define DATA_SIZE 1024 * 1024 * 100  // 10 MB
+#define DATA_SIZE 1024 * 1024 * 100  // 100 MB
 #define MUTEX_NAME L"PipeMutex"
 #define SEM_READER_DONE_NAME L"PipeReaderDoneSemaphore"
 #define SEM_WRITER_READY_NAME L"PipeWriterReadySemaphore"

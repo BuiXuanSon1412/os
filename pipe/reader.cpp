@@ -3,7 +3,7 @@
 #include <chrono>
 
 #define PIPE_NAME L"\\\\.\\pipe\\MyBenchmarkPipe"
-#define DATA_SIZE 1024 * 1024 * 100  // 10 MB
+#define DATA_SIZE 1024 * 1024 * 10  // 100 MB
 #define MUTEX_NAME L"PipeMutex"
 #define SEM_READER_DONE_NAME L"PipeReaderDoneSemaphore"
 #define SEM_WRITER_READY_NAME L"PipeWriterReadySemaphore"
@@ -27,7 +27,7 @@ int main() {
     // Open synchronization objects
     HANDLE hMutex = OpenMutexW(SYNCHRONIZE, FALSE, MUTEX_NAME);
     HANDLE hSemWriterReady = OpenSemaphoreW(SYNCHRONIZE, FALSE, SEM_WRITER_READY_NAME);
-    HANDLE hSemReaderDone = OpenSemaphoreW(SYNCHRONIZE, FALSE, SEM_READER_DONE_NAME);
+    HANDLE hSemReaderDone = OpenSemaphoreW(SEMAPHORE_MODIFY_STATE, FALSE, SEM_READER_DONE_NAME);
 
     if (!hMutex || !hSemWriterReady || !hSemReaderDone) {
         std::cerr << "Could not open synchronization objects: " << GetLastError() << "\n";

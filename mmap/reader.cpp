@@ -3,7 +3,7 @@
 #include <chrono>
 
 #define SHARED_MEMORY_NAME L"MySharedMemory"
-#define DATA_SIZE 1024 * 1024 * 100  // 10 MB
+#define DATA_SIZE 1024 * 1024 * 10  // 10 MB
 #define MUTEX_NAME L"MySharedMemoryMutex"
 #define SEM_READER_DONE_NAME L"ReaderDoneSemaphore"
 #define SEM_WRITER_READY_NAME L"WriterReadySemaphore"
@@ -26,8 +26,9 @@ int main() {
 
     // Open synchronization objects
     HANDLE hMutex = OpenMutexW(SYNCHRONIZE, FALSE, MUTEX_NAME);
-    HANDLE hSemWriterReady = OpenSemaphoreW(SYNCHRONIZE, FALSE, SEM_WRITER_READY_NAME);
-    HANDLE hSemReaderDone = OpenSemaphoreW(SYNCHRONIZE, FALSE, SEM_READER_DONE_NAME);
+    HANDLE hSemWriterReady = OpenSemaphoreW(SEMAPHORE_MODIFY_STATE, FALSE, SEM_WRITER_READY_NAME);
+    HANDLE hSemReaderDone = OpenSemaphoreW(SEMAPHORE_MODIFY_STATE, FALSE, SEM_READER_DONE_NAME);
+
 
     if (!hMutex || !hSemWriterReady || !hSemReaderDone) {
         std::cerr << "Could not open synchronization objects: " << GetLastError() << "\n";
@@ -53,7 +54,8 @@ int main() {
     ReleaseMutex(hMutex);  // Unlock mutex
 
     // Signal the writer that reading is done
-    ReleaseSemaphore(hSemReaderDone, 1, nullptr);
+    if (ReleaseSemaphore(hSemReaderDone, 1, nullptr))
+        std::cout << "Finish reading from reader" << std::endl;
 
     // Cleanup
     CloseHandle(hSemWriterReady);

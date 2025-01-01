@@ -3,7 +3,7 @@
 #include <chrono>
 
 #define SHARED_MEMORY_NAME L"MySharedMemory"
-#define DATA_SIZE 1024 * 1024 * 100  // 10 MB
+#define DATA_SIZE 1024 * 1024 * 10  // 10 MB
 #define MUTEX_NAME L"MySharedMemoryMutex"
 #define SEM_READER_DONE_NAME L"ReaderDoneSemaphore"
 #define SEM_WRITER_READY_NAME L"WriterReadySemaphore"
@@ -39,7 +39,7 @@ int main() {
     // Write data to shared memory
     WaitForSingleObject(hMutex, INFINITE);  // Lock mutex
     auto start = std::chrono::high_resolution_clock::now();
-    memset(pBuf, 'A', DATA_SIZE);
+    memset(pBuf, 'A', DATA_SIZE);  // Fill shared memory with data
     auto end = std::chrono::high_resolution_clock::now();
     std::cout << "Data written to shared memory.\n";
     std::cout << "Time taken to write data: "
@@ -48,11 +48,12 @@ int main() {
     ReleaseMutex(hMutex);  // Unlock mutex
 
     // Signal the reader that data is ready
-    ReleaseSemaphore(hSemWriterReady, 1, nullptr);
+    if (ReleaseSemaphore(hSemWriterReady, 1, nullptr))
+        std::cout << "Release for reader to read" << std::endl;
 
     // Wait for the reader to signal completion
     std::cout << "Waiting for reader to finish...\n";
-    WaitForSingleObject(hSemReaderDone, INFINITE);
+    WaitForSingleObject(hSemReaderDone, INFINITE);  // Wait for reader to finish
     std::cout << "Reader finished. Exiting writer program.\n";
 
     // Cleanup
